@@ -1,0 +1,77 @@
+# Automation
+
+The template is usable without any automation — you can run ingest, query, and lint operations manually in a Claude conversation any time. Automation is a quality-of-life layer on top.
+
+Three automation components, loosely coupled. Pick whichever you want to wire up.
+
+## 1. Chat archive harvester (optional)
+
+If the subject uses Claude regularly, their chat archive becomes a high-signal source — not for republication, but as a private signal about what the subject is already thinking about.
+
+**What it does:** watches an inbox for Claude.ai data-export emails, downloads the ZIP, unpacks, and drops `conversations.json` + `projects.json` + `memories.json` + `users.json` into a local `Chat Archive/` folder. Runs daily.
+
+**Assumptions:** the subject has Claude (or whichever LLM) with export available, triggers the export on a manual cadence (the platform's export process usually requires a click), and the automation catches the resulting email.
+
+**Implementation sketch:**
+- Scheduled task (cron, launchd, or a Claude scheduled task) running once a day
+- Watches Gmail / IMAP for emails matching the export-ready notification
+- Follows the download link, unzips, copies into `Chat Archive/`
+- Appends a log line to `wiki/log.md`
+
+**Privacy:** `Chat Archive/` is gitignored by default. Do not push the archive to a remote. The `CLAUDE.md` hard limit ("Never export or share chat-archive contents outside this vault") is the contract.
+
+## 2. Free-form INBOX (essential)
+
+`INBOX.md` at the repo root. The weekly digest reads this on each run.
+
+**What it does:** gives the subject, the maintainer, and anyone else who contributes context a single place to drop free-form notes between digest runs. The LLM processes on the next weekly pass, routes entries to the right pages, and marks them processed with a date tag.
+
+**No automation required** — just an empty file with a format doc. But it is the lowest-friction interface for getting context into the vault, so treat it as essential.
+
+## 3. Weekly digest scheduled task (the main event)
+
+The weekly digest is the vault's primary output. It's the thing the subject actually reads.
+
+**What it does, each run:**
+
+1. Reads `INBOX.md` for new entries; processes and marks each with a `[processed YYYY-MM-DD]` tag plus a one-line routing note
+2. Checks `Chat Archive/` for new entries since last run (if the harvester populated anything)
+3. Checks `raw/` subfolders for new source ingestions since last run
+4. Reads the tail of `wiki/log.md` for context
+5. Applies the bandwidth filter: how many items cleared `priority: high` AND (`strengthens_current_work: yes` OR `too_big_to_skip: yes`)?
+6. If fewer than the threshold cleared (default: 2 items, or any `#urgent` INBOX entry), **skip** — append `## [YYYY-MM-DD] digest-skipped | low-signal week` to `wiki/log.md`, stop
+7. Otherwise, produce `growth/weekly-YYYY-MM-DD.md` following the shape in `examples/weekly-digest.md`
+8. Optionally produce a Word doc (via `docx-js`) for easier cross-device reading by the subject
+9. Append to `wiki/log.md`
+10. Notify the maintainer with a short receipt (what was produced, what was processed, any filter tension worth surfacing)
+
+**Schedule:** weekly, on whatever day makes sense for the subject. Sunday evening is a good default (gives the subject a Monday-morning starting point). Friday afternoon works too (weekend reading).
+
+**Implementation options:**
+- Claude scheduled task (simplest if you're already in the Claude ecosystem)
+- cron + a script that calls the Claude API with the task prompt
+- launchd on macOS
+- Any other scheduler
+
+The logic is identical across implementations; only the dispatch differs.
+
+## Skip threshold tuning
+
+The skip rule's default threshold is 2 qualifying items (or any `#urgent` tag in the INBOX). Tune based on the subject's preference:
+
+- **Looser (threshold 1):** ships more digests, higher chance of low-signal weeks. Good if the subject prefers regular cadence.
+- **Tighter (threshold 3):** ships fewer digests, only substantive ones. Good if the subject's bandwidth is extremely scarce.
+- **Always ship:** disables the skip rule. Not recommended — defeats the main anti-noise mechanism.
+
+## Escalation path for `#urgent`
+
+If an INBOX entry carries `#urgent`, the digest ships this week regardless of the threshold — even if the rest of the pass would have been skipped. This is the override for "something changed and the subject needs to know now" (a recruiting deadline, a new team reorg, a surprise project).
+
+Use sparingly. If every week has an `#urgent` tag, the tag has stopped meaning anything.
+
+## Security notes
+
+- **Do not put workplace credentials in the repo.** If the harvester needs OAuth / API tokens, store them outside the repo (e.g., system keychain, environment variables).
+- **Do not commit `Chat Archive/`.** It's gitignored by default. Verify before every push.
+- **Do not commit the rendered `.docx` output.** Also gitignored.
+- **Sanitize before open-sourcing.** If you fork this template into a public repo, the `CLAUDE.md` should have no subject-identifying content. Use placeholders.
