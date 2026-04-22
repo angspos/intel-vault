@@ -69,7 +69,7 @@ The `too_big_to_skip` field is also load-bearing in a way other templates miss. 
 ## Credits
 
 - Andrej Karpathy's [LLM Wiki gist](https://gist.github.com/karpathy) (the base pattern)
-- ML-Course-Vault ([link to repo if public](https://github.com)) — an earlier instantiation of the pattern, applied to coursework
+- ML-Course-Vault ([link to repo](https://github.com/angspos/ai-augmented-learning)) — an earlier instantiation of the pattern, applied to coursework
 
 ## License
 
