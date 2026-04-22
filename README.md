@@ -1,30 +1,31 @@
-# wins/
+# Sidharth Intel Vault
 
-Shipped outcomes with full lineage. The promotion-receipts layer.
+A persistent, LLM-maintained knowledge base for Sidharth — a Senior Data Scientist — oriented around making him indispensable at his job.
 
-A `wins/` page documents what actually shipped, with a traceable path back to the source that originated the idea:
+The vault ingests signal from the AI ecosystem (Substacks, podcasts, articles, GitHub, research) and compounds it into a graph of tools, concepts, and workflows, each tagged with "how he could use this at work." Over time, that graph feeds a pipeline: **raw source → wiki page → idea → project → shipped win**. The `wins/` folder is the receipts layer — lineage-tracked outcomes for performance reviews and promotion conversations.
 
-```
-raw source → wiki page → ideas/ entry → projects/ entry → wins/ entry (shipped YYYY-MM-DD)
-```
+Modeled on Andrej Karpathy's [LLM Wiki pattern](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f) with career-specific additions. `CLAUDE.md` is the behavioral contract — read it first, it governs everything else.
 
-This chain is load-bearing. It turns "I read interesting things" into "I read X, which led to Y, which I prototyped, which I shipped, and here's the impact." At promotion time that chain is the difference between "shows interest in AI" and "demonstrates cross-functional execution from signal to outcome."
+## The layers
 
-## Template
+- `raw/` — immutable sources. Claude reads, never modifies.
+- `wiki/` — Claude-maintained knowledge graph. Markdown + wikilinks. Humans read; Claude writes.
+- `CLAUDE.md` — the schema. Conventions, workflows, guardrails.
+- `projects/` `ideas/` `wins/` `growth/` — career-specific layers. Where intel turns into action.
+- `Claude Chat Archive/` — private signal source, auto-populated weekly by the `claude-chat-export-harvester` scheduled task.
 
-See `CLAUDE.md` — `### wins/ entry` section.
+## The three operations
 
-Key fields:
-- `shipped`: YYYY-MM-DD
-- `project`: the `projects/` page this graduated from
-- Lineage section (the full chain)
-- Impact section (metrics, review-quotable outcomes — the things you'd put in a promo packet)
+- **Ingest** — drop a source into `raw/<category>/`, ask Claude to process. It writes a summary, updates the graph, logs the event.
+- **Query** — ask a question against the vault. Claude reads `wiki/index.md`, traverses links, answers with citations. Useful syntheses get filed back.
+- **Lint** — periodic health check. Claude surfaces contradictions, orphan pages, missing concepts, recurring themes to promote into `growth/`.
 
-## Discipline
+## Getting started
 
-Every `wins/` entry must:
-- Have a traceable lineage from `raw/` sources (not just "I had an idea")
-- Name at least one quantified or quantifiable impact
-- Include language that could survive being copy-pasted into a promotion packet or review document
+1. Open the vault in Obsidian (point Obsidian at this folder).
+2. Read `CLAUDE.md`.
+3. Clip your first article — drop it in `raw/articles/`.
+4. In Cowork, ask: *"Ingest the new article in raw/articles/."*
+5. Watch Claude write the first wiki pages, update `index.md`, and log the event.
 
-If a win doesn't have those, capture it as a "small ship" in a project's current-status notes instead.
+The vault gets smarter as you feed it. The goal isn't volume — it's *coverage* against Sidharth's job plus *connection density* between notes.
