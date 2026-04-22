@@ -2,7 +2,9 @@
 
 A personal knowledge system for absorbing the AI ecosystem's signal without burning your weekends. Built on Andrej Karpathy's LLM Wiki pattern, extended with a bandwidth-aware filter and a weekly digest automation loop.
 
-Use this template if you are a senior individual contributor who wants to stay current on AI tooling, research, and adjacent engineering craft — but a firehose of newsletters, GitHub trending lists, and arXiv isn't how you want to spend your free time.
+Use this template if you are an individual contributor who wants to stay current on AI tooling, research, and adjacent engineering craft — but a firehose of newsletters, GitHub trending lists, and arXiv isn't how you want to spend your free time.
+
+This framework works with any LLM you can have a conversation with. The weekly-digest automation assumes an agentic setup (scheduled tasks + tool use) — if you only have a chatbot, run the digest manually each week.
 
 ## What it is
 
