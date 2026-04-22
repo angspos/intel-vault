@@ -1,0 +1,69 @@
+# Design decisions
+
+This doc captures the rationale behind the non-obvious design choices. If you fork this template and find yourself wanting to rip something out, read the matching section here first — some of these look optional but are load-bearing.
+
+## Why verdict-first
+
+Every wiki page leads with a one-sentence verdict. This looks like formatting preference. It's actually a forcing function.
+
+The alternative — start with "what it is," then "why it matters," then conclude with a recommendation — reliably produces hedged, recommendation-averse pages because the writer (human or LLM) spends the whole page warming up and then hedges at the end. Leading with the verdict forces the writer to commit to a position on entry, and then the body becomes evidence for that position.
+
+Side effect: pages become scannable. A subject with scarce time can read the verdict line on every page in the weekly digest's short section and decide from that alone.
+
+## Why four Subject-Angle fields instead of one priority score
+
+Most knowledge vaults have a single priority field (high/med/low or stars). That collapses at least four distinct questions into one axis, and each question has different evidence:
+
+- **priority** — overall fit with the subject's role
+- **time_cost** — what adopting this costs in hours
+- **strengthens_current_work** — does it reduce today's effort?
+- **too_big_to_skip** — is it so career-load-bearing that not engaging is the bigger risk?
+
+The last two are the ones usually missing from career-productivity systems. Most templates surface "what helps you today." This template also surfaces "what is too load-bearing for your trajectory to ignore, even if it costs you now." Those are different questions and both matter, especially for someone aiming at a promotion that rewards forward-looking investment.
+
+The explicit split also prevents a class of failure mode where "interesting and novel" gets tagged as `priority: high` because nothing else is filtering it. Under this schema, an item can be novel and still be `priority: med` if it neither strengthens current work nor is too-big-to-skip. That's the right answer most of the time.
+
+## Why citation discipline
+
+The vault refuses to answer from open-web-training knowledge. If the subject asks about a concept and no source is in `raw/`, the LLM says "not yet in the vault — want me to add [URL] to `raw/`?" instead of answering from priors.
+
+This is expensive to enforce and occasionally frustrating. It's worth it because:
+
+1. **The vault compounds on its corpus.** If the LLM can answer from training, there's no pressure to grow `raw/`. Two months in, the vault is stagnant because nothing got added.
+2. **Traceability for promo receipts.** The `wins/` layer requires a lineage from `raw/` to shipped outcome. If answers can come from nowhere, the lineage breaks.
+3. **Sharper errors.** When the vault says "I don't have a source for this," the subject knows exactly what's missing. When the vault confabulates, the subject has to verify everything.
+
+## Why `too_big_to_skip` and the "bandwidth" framing
+
+Templated productivity systems usually optimize for helpfulness. That's the wrong objective for a bandwidth-constrained subject: every recommendation has a cost (time to evaluate, cognitive load, followup), and "helpful but costly" is a bad trade at scale.
+
+So the filter is inverted: *by default, skip.* An item only gets surfaced if it either saves current-work effort (clear positive ROI) or is too-big-to-skip (the cost of not engaging is higher than the cost of engaging).
+
+The `too_big_to_skip` lane is specifically for avoiding regret-shaped failures. Examples: a subject in an agentic-workflow role skipping agent-eval infrastructure because they're too busy shipping the workflow. The cost of not engaging compounds silently until the project fails in production. Flagging these explicitly forces a conversation about "yes, this is expensive now, but we should probably engage."
+
+## Why a separate INBOX instead of a direct edit loop
+
+The weekly digest reads from an `INBOX.md` where anyone (subject, partner, collaborator) can dump free-form context between runs. This looks like overhead — why not just edit the vault pages directly?
+
+- Dumping is lower-friction than editing. The subject mentions over dinner that they're reading Kleppmann's DDIA for a work project; the partner adds it to INBOX in 10 seconds. No schema work, no wiki-page decision, no "where does this go?"
+- Batching helps accuracy. The LLM processes INBOX entries weekly and routes them with full vault context — much better routing than an in-the-moment edit.
+- Preserves the "LLM owns wiki/" contract. Humans dump to INBOX, the LLM writes wiki. Keeps the layer boundaries clean.
+
+## Why skip-the-week
+
+The weekly digest has a skip rule: if fewer than N qualifying items cleared the filter that week, produce no digest. Appending "nothing much this week" to the log is fine; sending the subject a low-signal digest is not.
+
+This is counterintuitive because most reporting systems are biased toward "ship something every period" (weekly reports, standups, dashboards). The bandwidth framing inverts that: a digest with one marginal item is worse than no digest, because the subject now has to read, evaluate, and dismiss it. The base rate of unnecessary digests is the vault's noise floor, and the skip rule keeps it at zero.
+
+## Why no emojis
+
+The vault is used across surfaces — Obsidian on a laptop, Word doc forwarded to the subject, plain-text email summary. Emojis don't render consistently, get corrupted in transit, and set a tone (informal, decorative) that clashes with the vault's "reports, doesn't advocate" voice. Removing them is a cheap cross-surface portability win.
+
+## What's NOT in the design
+
+A few things intentionally excluded, with rationale:
+
+- **No auto-send to subject.** The vault never emails, Slacks, or posts on the subject's behalf. The maintainer forwards; subject decides. This is a hard limit because silent auto-actions break trust in subtle ways.
+- **No "smart" prioritization beyond the four filter fields.** An LLM could rank items on many axes. The template resists this. Four axes is the minimum to disambiguate, and adding more dilutes each one. Resist the urge to add "novelty" or "trending" fields.
+- **No per-item notification.** Batching to weekly is the point. Per-item notifications would recreate the firehose this template is designed to eliminate.
+- **No analytics layer.** The `wins/` layer is the only feedback loop. If an approach isn't producing wins, the subject notices — no dashboard required.
