@@ -2,7 +2,7 @@
 
 A personal knowledge system for absorbing the AI ecosystem's signal without burning your weekends. Built on Andrej Karpathy's LLM Wiki pattern, extended with a bandwidth-aware filter and a weekly digest automation loop.
 
-Use this template if you are a senior individual contributor who wants to stay current on AI tooling, research, and adjacent engineering craft — but a firehose of newsletters, GitHub trending lists, and arXiv isn't how you want to spend your free time.
+Use this template if you are a individual contributor (geared towards senior levels but anyone can benefit) who wants to stay current on AI tooling, research, and adjacent engineering craft — but a firehose of newsletters, GitHub trending lists, and arXiv isn't how you want to spend your free time.
 
 ## What it is
 
@@ -78,3 +78,5 @@ MIT — see [LICENSE](LICENSE).
 Template is stable. The example persona + example weekly-digest in `examples/` illustrate what the vault produces. Automation scripts are in `docs/automation.md` — wire them up to whatever scheduler you prefer.
 
 This repo is a sanitized template extracted from a working personal instance. The working instance stays private; this template is what I'd fork if I were setting it up from scratch.
+
+*Built by Angela Sposato, Spring 2026.*
